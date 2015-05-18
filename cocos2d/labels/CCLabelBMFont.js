@@ -539,6 +539,7 @@ cc.LabelBMFont = cc.SpriteBatchNode.extend(/** @lends cc.LabelBMFont# */{
     updateLabel: function () {
         var self = this;
         self.string = self._initialString;
+        var i = 0;
         // process string
         // Step 1: Make multiline
         if (self._width > 0) {
