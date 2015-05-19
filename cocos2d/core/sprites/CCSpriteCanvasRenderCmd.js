@@ -244,6 +244,7 @@
         if (node._rectRotated)
             node._originalTexture = pNewTexture;      //TODO
         this._colorized = false;
+        node.texture = this._originalTexture;
         this._textureCoord.renderX = this._textureCoord.x;
         this._textureCoord.renderY = this._textureCoord.y;
         if (textureLoaded) {
