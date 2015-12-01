@@ -48,9 +48,7 @@ function callOnEnable (self, enable) {
                 }
             }
 
-            _registerStart(self);
-            _registerUpdate(self, true);
-            _registerLateUpdate(self, true);
+            _registerEvent(self, true);
 
             self._objFlags |= IsOnEnableCalled;
         }
@@ -66,56 +64,45 @@ function callOnEnable (self, enable) {
                 }
             }
 
-            _registerUpdate(self, false);
-            _registerLateUpdate(self, false);
+            _registerEvent(self, false);
 
             self._objFlags &= ~IsOnEnableCalled;
         }
     }
 }
 
-function _registerStart (self) {
-    if (!self.start) return;
-
-    if (!(self._objFlags & IsOnStartCalled)) {
-        if (CC_EDITOR) {
-            if (self.constructor._executeInEditMode || cc.engine._isPlaying) {
+function _registerEvent (self, on) {
+    if (CC_EDITOR) {
+        if (self.constructor._executeInEditMode || cc.engine._isPlaying) {
+            if (on && self.start && !(self._objFlags & IsOnStartCalled)) {
                 cc.engine.once('before-update', _callStart, self);
             }
+
+            if (self.update) {
+                if (on) cc.engine.on('post-update', _callUpdate, self);
+                else cc.engine.off('post-update', _callUpdate, self);
+            }
+
+            if (self.lateUpdate) {
+                if (on) cc.engine.on('late-update', _callLateUpdate, self);
+                else cc.engine.off('late-update', _callLateUpdate, self);
+            }
         }
-        else {
+    }
+    else {
+        if (on && self.start && !(self._objFlags & IsOnStartCalled)) {
             cc.director.once(cc.Director.EVENT_BEFORE_UPDATE, _callStart, self);
         }
-    }
-}
 
-function _registerUpdate (self, on) {
-    if (!self.update) return;
-
-    if (CC_EDITOR) {
-        if (self.constructor._executeInEditMode || cc.engine._isPlaying) {
-            if (on) cc.engine.on('post-update', _callUpdate, self);
-            else cc.engine.off('post-update', _callUpdate, self);
+        if (self.update) {
+            if (on) cc.director.on(cc.Director.EVENT_COMPONENT_UPDATE, _callUpdate, self);
+            else cc.director.off(cc.Director.EVENT_COMPONENT_UPDATE, _callUpdate, self);
         }
-    }
-    else {
-        if (on) cc.director.on(cc.Director.EVENT_COMPONENT_UPDATE, _callUpdate, self);
-        else cc.director.off(cc.Director.EVENT_COMPONENT_UPDATE, _callUpdate, self);
-    }
-}
 
-function _registerLateUpdate (self, on) {
-    if (!self.lateUpdate) return;
-
-    if (CC_EDITOR) {
-        if (self.constructor._executeInEditMode || cc.engine._isPlaying) {
-            if (on) cc.engine.on('late-update', _callLateUpdate, self);
-            else cc.engine.off('late-update', _callLateUpdate, self);
+        if (self.lateUpdate) {
+            if (on) cc.director.on(cc.Director.EVENT_COMPONENT_LATE_UPDATE, _callLateUpdate, self);
+            else cc.director.off(cc.Director.EVENT_COMPONENT_LATE_UPDATE, _callLateUpdate, self);
         }
-    }
-    else {
-        if (on) cc.director.on(cc.Director.EVENT_COMPONENT_LATE_UPDATE, _callLateUpdate, self);
-        else cc.director.off(cc.Director.EVENT_COMPONENT_LATE_UPDATE, _callLateUpdate, self);
     }
 }
 
