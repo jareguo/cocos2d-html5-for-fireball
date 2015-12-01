@@ -49,7 +49,8 @@ function callOnEnable (self, enable) {
             }
 
             if (!(self._objFlags & IsOnStartCalled) && self.start) {
-                cc.director.once(cc.Director.EVENT_BEFORE_UPDATE, _callStart, self);
+                if (CC_EDITOR) cc.engine.once('post-update', _callStart, self);
+                else cc.director.once(cc.Director.EVENT_BEFORE_UPDATE, _callStart, self);
             }
             self.update && cc.director.on(cc.Director.EVENT_COMPONENT_UPDATE, _callUpdate, self);
             self.lateUpdate && cc.director.on(cc.Director.EVENT_COMPONENT_LATE_UPDATE, _callLateUpdate, self);
