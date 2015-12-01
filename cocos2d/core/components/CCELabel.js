@@ -164,8 +164,9 @@ var Label = cc.Class({
         sgNode.setHorizontalAlign( this.horizontalAlign );
         sgNode.setVerticalAlign( this.verticalAlign );
         sgNode.setFontSize( this.fontSize );
-        sgNode.setOverflow( this.overFlow );
+        sgNode.setOverflow( this.overflow );
         sgNode.enableWrapText( this.enableWrapText );
+        sgNode.setContentSize( this.node.getContentSize() );
 
         return sgNode;
     },
