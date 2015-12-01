@@ -222,7 +222,7 @@
             this._labelContext.fillText(this._splitedStrings[i],labelX,firstLinelabelY + i * lineHeight);
         }
 
-        this._labelTexture.initWithElement(this._labelCanvas);
+        this._labelTexture._textureLoaded = false;
         this._labelTexture.handleLoadedTexture();
     };
 
@@ -244,6 +244,7 @@
         this._labelCanvas.width = 1;
         this._labelCanvas.height = 1;
         this._labelContext = this._labelCanvas.getContext("2d");
+        this._labelTexture.initWithElement(this._labelCanvas);
         this._quad = new cc.V3F_C4B_T2F_Quad();
         this._quadDirty = true;
         this._splitedStrings = null;
