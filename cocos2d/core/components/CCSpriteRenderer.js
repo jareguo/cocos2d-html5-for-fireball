@@ -38,7 +38,7 @@ MonitorSize.prototype = {
     _getHeight: function () {
         return this.getContentSize().height;
     }
-}
+};
 
 var SpriteType = cc.SpriteType;
 
@@ -481,7 +481,7 @@ var SpriteRenderer = cc.Class({
             node.setPreferredSize(rect.size);
         }
         else {
-            node.setPreferredSize(this.node.getContentSize());
+            node.setPreferredSize(this.node.getContentSize(true));
         }
     },
 
