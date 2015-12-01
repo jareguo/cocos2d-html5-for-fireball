@@ -74,7 +74,7 @@
             return [text];
         }
         while (words.length > 0) {
-            while (ctx.measureText(words[0]).width >= maxWidth) {
+            while (ctx.measureText(words[0]).width >= maxWidth && words[0].length > 1) {
                 var tmp = words[0];
                 words[0] = tmp.slice(0, -1);
                 if (words.length > 1) {
@@ -85,11 +85,13 @@
             }
             if (ctx.measureText(line + words[0]).width < maxWidth) {
                 line += words.shift() + " ";
+            } else if(line.length === 0 && words[0].length === 1){
+                lines.push(words.shift());
             } else {
-                lines.push(line);
+                lines.push(line.slice(0,-1));
                 line = "";
             }
-            if (words.length === 0) {
+            if (words.length === 0 && line.length > 0) {
                 lines.push(line);
             }
         }
