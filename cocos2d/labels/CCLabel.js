@@ -41,11 +41,8 @@ cc.Label = cc.Node.extend({
     _fontHandle: "",
 
     //fontHandle it is a font name or bmfont file.
-    ctor: function(fontHandle, isTTF) {
-        fontHandle = fontHandle || "";
-        this._fontHandle = fontHandle;
-        isTTF = isTTF || true;
-        this._labelIsTTF = isTTF;
+    ctor: function(fontHandle) {
+        this.setFontFileOrFamily(fontHandle);
         cc.Node.prototype.ctor.call(this);
         this.setContentSize(cc.size(128, 128));
     },
@@ -131,6 +128,68 @@ cc.Label = cc.Node.extend({
         return this._spacingY;
     },
 
+    setFontFileOrFamily: function( fontHandle ) {
+        fontHandle = fontHandle || "";
+        if(fontHandle.indexOf(cc.loader.resPath) === -1) fontHandle = cc.loader.resPath + "/"+ fontHandle;
+        if(fontHandle.indexOf(".ttf") !== -1) {
+            this._labelIsTTF = true;
+            this._fontHandle = this._loadTTFFont(fontHandle);
+        }
+        else {
+            this._fontHandle = fontHandle;
+            this._labelIsTTF = true;
+            this._notifyLabelSkinDirty();
+        }
+    },
+
+    _loadTTFFont : function(fontHandle){
+        var ttfIndex = fontHandle.lastIndexOf(".ttf");
+        if(ttfIndex === -1) return fontHandle;
+        var slashPos = fontHandle.lastIndexOf("/");
+        var fontFamilyName;
+        if(slashPos === -1) fontFamilyName = fontHandle.substring(0,ttfIndex ) + "_LABEL";
+        else fontFamilyName = fontHandle.substring(slashPos + 1, ttfIndex) + "_LABEL";
+        var self = this;
+        if(FontFace) {
+            var fontFace = new FontFace(fontFamilyName, "url('" + fontHandle + "')");
+            fontFace.load().then( function (loadedFace) {
+                document.fonts.add(loadedFace);
+                self._notifyLabelSkinDirty();
+            });
+        } else {
+            //fall back implementations
+            var doc = document, fontStyle = document.createElement("style");
+            fontStyle.type = "text/css";
+            doc.body.appendChild(fontStyle);
+
+            var fontStr = "";
+            if(isNaN(fontFamilyName - 0))
+                fontStr += "@font-face { font-family:" + fontFamilyName + "; src:";
+            else
+                fontStr += "@font-face { font-family:'" + fontFamilyName + "'; src:";
+
+            fontStr += "url('" + fontHandle + "');";
+
+            fontStyle.textContent = fontStr + "}";
+
+            //<div style="font-family: PressStart;">.</div>
+            var preloadDiv = document.createElement("div");
+            var _divStyle =  preloadDiv.style;
+            _divStyle.fontFamily = name;
+            preloadDiv.innerHTML = ".";
+            _divStyle.position = "absolute";
+            _divStyle.left = "-100px";
+            _divStyle.top = "-100px";
+            doc.body.appendChild(preloadDiv);
+            self.scheduleOnce(self._notifyLabelSkinDirty,2);
+        }
+
+
+
+
+        return fontFamilyName;
+    },
+
     setContentSize: function(size, height) {
         var oldWidth = this._contentSize.width;
         var oldHeight = this._contentSize.height;
@@ -143,7 +202,8 @@ cc.Label = cc.Node.extend({
 
     _notifyLabelSkinDirty: function() {
         this._labelSkinDirty = true;
-        this._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.textDirty);
+        if(this._renderCmd)
+            this._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.textDirty);
     },
     _createRenderCmd: function() {
 
