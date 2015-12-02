@@ -63,7 +63,6 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
         _opacity: 255,
         _color: cc.Color.WHITE,
         _cascadeOpacityEnabled: true,
-        _cascadeColorEnabled: false,
         _parent: null,
         _anchorPoint: cc.p(0.5, 0.5),
         _contentSize: cc.size(0, 0),
@@ -492,24 +491,8 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
                 if (CC_DEV && value.a !== 255) {
                     cc.warn('Should not set alpha via "color", use "opacity" please.');
                 }
-                this._sgNode.color = value;
+                //this._sgNode.color = value;
                 this._onColorChanged();
-            },
-        },
-
-        /**
-         * Indicate whether node's color value affect its child nodes, default value is false.
-         * @property cascadeColor
-         * @type {Boolean}
-         */
-        cascadeColor: {
-            get: SGProto.isCascadeColorEnabled,
-            set: function (value) {
-                if (this._cascadeColorEnabled !== value) {
-                    this._cascadeColorEnabled = value;
-                    this._sgNode.cascadeColor = value;
-                    this._onCascadeChanged();
-                }
             },
         },
     },
@@ -852,17 +835,6 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
             child.setTag(tag);
         else
             child.setName(name);
-
-        //if( this._running ){
-        //    child.onEnter();
-        //    // prevent onEnterTransitionDidFinish to be called twice when a node is added in onEnter
-        //    if (this._isTransitionFinished)
-        //        child.onEnterTransitionDidFinish();
-        //}
-        //if (this._cascadeColorEnabled)
-        //    child._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.colorDirty);
-        //if (this._cascadeOpacityEnabled)
-        //    child._renderCmd.setDirtyFlag(cc.Node._dirtyFlags.opacityDirty);
     },
 
     _insertChild: function (child, z) {
@@ -1227,9 +1199,7 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
     _onBatchCreated: function () {
         var sgNode = this._sgNode;
         sgNode.setOpacity(this._opacity);
-        sgNode.setColor(this._color);
         sgNode.setCascadeOpacityEnabled(this._cascadeOpacityEnabled);
-        sgNode.setCascadeColorEnabled(this._cascadeColorEnabled);
         sgNode.setRotationX(this._rotationX);
         sgNode.setRotationY(this._rotationY);
         sgNode.setScale(this._scaleX, this._scaleY);

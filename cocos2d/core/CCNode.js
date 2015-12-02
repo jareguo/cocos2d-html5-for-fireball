@@ -482,16 +482,12 @@ var Node = cc.Class({
 
     _onColorChanged: function () {
         // update components if also in scene graph
-        if ( !this._cascadeColorEnabled || !this._cascadeOpacityEnabled ) {
-            for (var c = 0; c < this._components.length; ++c) {
-                var comp = this._components[c];
-                if (comp instanceof cc._ComponentInSG && comp.isValid) {
-                    if (!this._cascadeColorEnabled) {
-                        comp._sgNode.setColor(this._color);
-                    }
-                    if (!this._cascadeOpacityEnabled) {
-                        comp._sgNode.setOpacity(this._opacity);
-                    }
+        for (var c = 0; c < this._components.length; ++c) {
+            var comp = this._components[c];
+            if (comp instanceof cc._ComponentInSG && comp.isValid) {
+                comp._sgNode.setColor(this._color);
+                if ( !this._cascadeOpacityEnabled ) {
+                    comp._sgNode.setOpacity(this._opacity);
                 }
             }
         }
@@ -499,12 +495,10 @@ var Node = cc.Class({
 
     _onCascadeChanged: function () {
         // update components which also in scene graph
-        var color = this._cascadeColorEnabled ? cc.Color.WHITE : this._color;
         var opacity = this._cascadeOpacityEnabled ? 255 : this._opacity;
         for (var c = 0; c < this._components.length; ++c) {
             var comp = this._components[c];
             if (comp instanceof cc._ComponentInSG && comp.isValid) {
-                comp._sgNode.setColor(color);
                 comp._sgNode.setOpacity(opacity);
             }
         }
