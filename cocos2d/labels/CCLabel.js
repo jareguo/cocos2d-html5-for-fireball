@@ -140,7 +140,7 @@ cc.Label = cc.Node.extend({
             return;
         }
         //add resource path
-        fontHandle = cc.loader.resPath + "/"+ fontHandle;
+        fontHandle = cc.path.join(cc.loader.resPath, fontHandle);
 
         if(extName === ".ttf") {
             this._labelIsTTF = true;
