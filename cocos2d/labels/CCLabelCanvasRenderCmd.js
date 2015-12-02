@@ -110,6 +110,8 @@
         var ctx = this._labelContext;
         var canvasSizeX = node._contentSize.width;
         var canvasSizeY = node._contentSize.height;
+        if(canvasSizeX <=0) canvasSizeX = 1;
+        if(canvasSizeY <=0) canvasSizeY = 1;
         var paragraphedStrings = node._string.split("\n");
         var paragraphLength = [];
         this._drawFontsize = node._fontSize;
