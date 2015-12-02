@@ -130,14 +130,26 @@ cc.Label = cc.Node.extend({
 
     setFontFileOrFamily: function( fontHandle ) {
         fontHandle = fontHandle || "";
-        if(fontHandle.indexOf(cc.loader.resPath) === -1) fontHandle = cc.loader.resPath + "/"+ fontHandle;
-        if(fontHandle.indexOf(".ttf") !== -1) {
+        var extName = cc.path.extname(fontHandle);
+
+        //specify font family name directly
+        if( extName === null) {
+            this._fontHandle = fontHandle;
+            this._labelIsTTF = true;
+            this._notifyLabelSkinDirty();
+            return;
+        }
+        //add resource path
+        fontHandle = cc.loader.resPath + "/"+ fontHandle;
+
+        if(extName === ".ttf") {
             this._labelIsTTF = true;
             this._fontHandle = this._loadTTFFont(fontHandle);
         }
         else {
+            //todo add bmfont here
             this._fontHandle = fontHandle;
-            this._labelIsTTF = true;
+            this._labelIsTTF = false;
             this._notifyLabelSkinDirty();
         }
     },
@@ -183,9 +195,6 @@ cc.Label = cc.Node.extend({
             doc.body.appendChild(preloadDiv);
             self.scheduleOnce(self._notifyLabelSkinDirty,2);
         }
-
-
-
 
         return fontFamilyName;
     },
