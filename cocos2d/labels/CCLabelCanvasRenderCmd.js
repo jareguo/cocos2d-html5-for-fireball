@@ -291,7 +291,7 @@
 
         var wrapper = ctx || cc._renderContext, context = wrapper.getContext();
         wrapper.setTransform(this._worldTransform, scaleX, scaleY);
-        //wrapper.setCompositeOperation(node._blendFunc);
+        wrapper.setCompositeOperation(cc.Node.CanvasRenderCmd._getCompositeOperationByBlendFunc(node._blendFunc));
         wrapper.setGlobalAlpha(alpha);
 
         if(this._labelTexture) {
