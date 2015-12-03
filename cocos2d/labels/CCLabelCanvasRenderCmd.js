@@ -44,7 +44,7 @@
 
     proto._prepareQuad = function() {
         var quad = this._quad;
-        var white = cc.color(255,255,255,255);
+        var white = cc.color(255,255,255,this._displayedOpacity);
         var width = this._node._contentSize.width;
         var height = this._node._contentSize.height;
         quad._bl.colors = white;
@@ -97,8 +97,20 @@
         }
         return lines;
     };
+    proto._updateDisplayOpacity = function(parentOpacity) {
+        cc.Node.RenderCmd.prototype._updateDisplayOpacity.call(this, parentOpacity);
+        //specify opacity to quad
+        var color = cc.color(255,255,255,this._displayedOpacity);
+        var quad = this._quad;
+        quad._bl.colors = color;
+        quad._br.colors = color;
+        quad._tl.colors = color;
+        quad._tr.colors = color;
+        this._quadDirty = true;
+    };
     proto.updateStatus = function () {
         cc.Node.RenderCmd.prototype.updateStatus.call(this);
+
         var textDirty = this._dirtyFlag & cc.Node._dirtyFlags.textDirty;
         if(textDirty) {
             this._dirtyFlag = this._dirtyFlag & cc.Node._dirtyFlags.textDirty ^ this._dirtyFlag;
@@ -188,7 +200,9 @@
         this._labelContext.clearRect(0,0,this._labelCanvas.width,this._labelCanvas.height);
         //this._labelContext.fillStyle = "rgb(128,128,128)";
         //this._labelContext.fillRect(0,0,this._labelCanvas.width,this._labelCanvas.height);
-        this._labelContext.fillStyle = "rgb(255,255,255)";
+        var color = this._displayedColor;
+        this._labelContext.fillStyle = "rgb(" + color.r + "," + color.g + "," +
+            color.b +  ")";
 
         var lineHeight = this._getLineHeight();
         var lineCount = this._splitedStrings.length;

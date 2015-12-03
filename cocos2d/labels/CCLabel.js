@@ -35,7 +35,7 @@ cc.Label = cc.Node.extend({
     _isWrapText: true,
     _spacingX: 0,
     _spacingY: 0,
-
+    _blendFunc: null,
     _labelSkinDirty: true,
     _labelIsTTF: true,
     _fontHandle: "",
@@ -45,6 +45,7 @@ cc.Label = cc.Node.extend({
         this.setFontFileOrFamily(fontHandle);
         cc.Node.prototype.ctor.call(this);
         this.setContentSize(cc.size(128, 128));
+        this._blendFunc = cc.BlendFunc._alphaNonPremultiplied();
     },
 
     setHorizontalAlign: function(align) {
@@ -207,6 +208,15 @@ cc.Label = cc.Node.extend({
             return;
         }
         this._notifyLabelSkinDirty();
+    },
+
+    setBlendFunction: function(blendFunc) {
+        this._blendFunc.src = blendFunc.src;
+        this._blendFunc.dst = blendFunc.dst;
+    },
+
+    getBlendFunction: function() {
+        return new cc.BlendFunc(this._blendFunc.src, this._blendFunc.dst);
     },
 
     _notifyLabelSkinDirty: function() {
