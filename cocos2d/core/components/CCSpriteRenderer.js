@@ -29,8 +29,9 @@ MonitorSize.prototype = {
     getContentSize: function () {
         return this._target._sgNode.getContentSize();
     },
-    setContentSize: function () {
+    setContentSize: function (size) {
         this._target.useOriginalSize = false;
+        this._target._sgNode.setPreferredSize(size);
     },
     _getWidth: function () {
         return this.getContentSize().width;

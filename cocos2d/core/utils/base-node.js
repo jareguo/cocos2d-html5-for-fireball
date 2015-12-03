@@ -375,10 +375,9 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
             },
             set: function (value) {
                 if (this._sizeProvider) {
-                    this._sizeProvider.setContentSize(value, this.height);
+                    this._sizeProvider.setContentSize(new cc.Size(value, this._sizeProvider._getHeight()));
                 }
                 this._contentSize.width = value;
-                this._onSizeChanged();
             },
         },
 
@@ -400,10 +399,9 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
             },
             set: function (value) {
                 if (this._sizeProvider) {
-                    this._sizeProvider.setContentSize(this.width, value);
+                    this._sizeProvider.setContentSize(new cc.Size(this._sizeProvider._getWidth(), value));
                 }
                 this._contentSize.height = value;
-                this._onSizeChanged();
             },
         },
 
@@ -505,7 +503,6 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
         });
 
         var sgNode = this._sgNode = new cc.Node();
-        sgNode.retain();
         if (!cc.game._isCloning) {
             sgNode.cascadeOpacity = true;
         }
@@ -528,8 +525,6 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
     _onHierarchyChanged: null,
     // called when the node's color or opacity changed
     _onColorChanged: null,
-    // called when the node's width or height changed
-    _onSizeChanged: null,
     // called when the node's anchor changed
     _onAnchorChanged: null,
     // called when the node's cascadeOpacity or cascadeColor changed
@@ -752,7 +747,6 @@ var BaseNode = cc.Class(/** @lends cc.ENode# */{
         if (this._sizeProvider) {
             this._sizeProvider.setContentSize(locContentSize);
         }
-        this._onSizeChanged();
     },
 
     /**

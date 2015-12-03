@@ -36,6 +36,9 @@ cc.EScene = cc.Class({
     extends: require('./utils/base-node'),
 
     ctor: function () {
+        var sgNode = this._sgNode = new cc.Scene();
+        sgNode.setAnchorPoint(0.0, 0.0);
+
         this._activeInHierarchy = false;
         this._inited = !cc.game._isCloning;
     },
@@ -59,7 +62,6 @@ cc.EScene = cc.Class({
 
     _onHierarchyChanged: NIL,
     _onColorChanged: NIL,
-    _onSizeChanged: NIL,
     _onAnchorChanged: NIL,
     _onOpacityModifyRGBChanged: NIL,
     _onCascadeChanged: NIL,
