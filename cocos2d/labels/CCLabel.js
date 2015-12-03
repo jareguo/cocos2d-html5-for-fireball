@@ -210,12 +210,19 @@ cc.Label = cc.Node.extend({
         this._notifyLabelSkinDirty();
     },
 
-    setBlendFunction: function(blendFunc) {
-        this._blendFunc.src = blendFunc.src;
-        this._blendFunc.dst = blendFunc.dst;
+    setBlendFunc: function (src, dst) {
+        var locBlendFunc = this._blendFunc;
+        if (dst === undefined) {
+            locBlendFunc.src = src.src;
+            locBlendFunc.dst = src.dst;
+        } else {
+            locBlendFunc.src = src;
+            locBlendFunc.dst = dst;
+        }
     },
 
-    getBlendFunction: function() {
+
+    getBlendFunc: function() {
         return new cc.BlendFunc(this._blendFunc.src, this._blendFunc.dst);
     },
 
