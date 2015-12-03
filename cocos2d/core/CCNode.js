@@ -504,16 +504,6 @@ var Node = cc.Class({
         }
     },
 
-    _onSizeChanged: function () {
-        // update components if also in scene graph
-        for (var c = 0; c < this._components.length; ++c) {
-            var comp = this._components[c];
-            if (comp instanceof cc._ComponentInSG && comp.isValid) {
-                comp._sgNode.setContentSize(this._contentSize);
-            }
-        }
-    },
-
     _onAnchorChanged: function () {
         // update components if also in scene graph
         for (var c = 0; c < this._components.length; ++c) {
